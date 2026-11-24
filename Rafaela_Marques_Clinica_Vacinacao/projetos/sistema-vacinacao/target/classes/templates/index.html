@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clínica de Vacinação - Rafaela Marques</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f8fc; color: #17324d; }
+        header { background: #1677b8; color: white; padding: 24px; text-align: center; }
+        main { max-width: 1100px; margin: 24px auto; display: grid; gap: 20px; }
+        section { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px #d8e3ec; }
+        h2 { margin-top: 0; color: #1677b8; }
+        form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        input, select, button { box-sizing: border-box; width: 100%; padding: 10px; border: 1px solid #bfd0df; border-radius: 6px; }
+        button { background: #1677b8; color: white; border: 0; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { border-bottom: 1px solid #dce6ef; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Sistema de Controle de Clínica de Vacinação</h1>
+    <p>Rafaela Marques</p>
+</header>
+<main>
+    <section>
+        <h2>Cadastrar paciente</h2>
+        <form th:action="@{/pacientes}" method="post">
+            <input name="nomePaciente" placeholder="Nome completo" required>
+            <input name="cpf" placeholder="CPF" required>
+            <input name="telefone" placeholder="Telefone" required>
+            <input name="dataNascimento" type="date" required>
+            <button type="submit">Salvar paciente</button>
+        </form>
+        <table>
+            <thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Nascimento</th></tr></thead>
+            <tbody>
+            <tr th:each="paciente : ${pacientes}">
+                <td th:text="${paciente.nomePaciente}"></td>
+                <td th:text="${paciente.cpf}"></td>
+                <td th:text="${paciente.telefone}"></td>
+                <td th:text="${paciente.dataNascimento}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Cadastrar vacina</h2>
+        <form th:action="@{/vacinas}" method="post">
+            <input name="nomeVacina" placeholder="Nome da vacina" required>
+            <input name="fabricante" placeholder="Fabricante" required>
+            <input name="quantidadeDoses" type="number" min="1" placeholder="Quantidade de doses" required>
+            <input name="validadeVacina" type="date" required>
+            <input name="lote" placeholder="Lote" required>
+            <button type="submit">Salvar vacina</button>
+        </form>
+        <table>
+            <thead><tr><th>Vacina</th><th>Fabricante</th><th>Doses</th><th>Validade</th><th>Lote</th></tr></thead>
+            <tbody>
+            <tr th:each="vacina : ${vacinas}">
+                <td th:text="${vacina.nomeVacina}"></td>
+                <td th:text="${vacina.fabricante}"></td>
+                <td th:text="${vacina.quantidadeDoses}"></td>
+                <td th:text="${vacina.validadeVacina}"></td>
+                <td th:text="${vacina.lote}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Novo agendamento</h2>
+        <form th:action="@{/agendamentos}" method="post">
+            <select name="idPaciente" required>
+                <option value="">Selecione o paciente</option>
+                <option th:each="paciente : ${pacientes}" th:value="${paciente.idPaciente}" th:text="${paciente.nomePaciente}"></option>
+            </select>
+            <select name="idVacina" required>
+                <option value="">Selecione a vacina</option>
+                <option th:each="vacina : ${vacinas}" th:value="${vacina.idVacina}" th:text="${vacina.nomeVacina}"></option>
+            </select>
+            <input name="dataAgendamento" type="date" required>
+            <input name="horarioAgendamento" type="time" required>
+            <button type="submit">Agendar</button>
+        </form>
+        <table>
+            <thead><tr><th>Paciente</th><th>Vacina</th><th>Data</th><th>Horário</th><th>Ação</th></tr></thead>
+            <tbody>
+            <tr th:each="agendamento : ${agendamentos}">
+                <td th:text="${agendamento.paciente.nomePaciente}"></td>
+                <td th:text="${agendamento.vacina.nomeVacina}"></td>
+                <td th:text="${agendamento.dataAgendamento}"></td>
+                <td th:text="${agendamento.horarioAgendamento}"></td>
+                <td>
+                    <form th:action="@{/agendamentos/excluir}" method="post">
+                        <input type="hidden" name="idAgendamento" th:value="${agendamento.idAgendamento}">
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
